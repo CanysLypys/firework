@@ -1,8 +1,3 @@
-ESX = nil
-
-TriggerEvent("esx:getSharedObject", function(obj) ESX = obj end)
-
-
 GetTime = function()
 	local timestamp = os.time()
 	local d = os.date("*t", timestamp).wday
