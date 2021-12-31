@@ -44,11 +44,9 @@ FireworkShow = function()
 end
 
 RegisterCommand("fireworkshow", function(source)
-    local xPlayer = ESX.GetPlayerFromId(source)
-
     print("^Fireworkshow started manually.^0")
-    TriggerClientEvent("firework:startFireworkShow", xPlayer.source)
-end)
+    TriggerClientEvent("firework:startFireworkShow", source)
+end, false)
 
 RegisterNetEvent("firework:battery")
 AddEventHandler("firework:battery", function(fireworkPos)
