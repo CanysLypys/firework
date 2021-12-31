@@ -1,12 +1,3 @@
-ESX = nil
-
-Citizen.CreateThread(function()
-	while ESX == nil do
-		TriggerEvent("esx:getSharedObject", function(obj) ESX = obj end)
-		Wait(0)
-	end
-end)
-
 local particleDict = "scr_indep_fireworks"
 
 RegisterNetEvent("firework:startFireworkShow")
