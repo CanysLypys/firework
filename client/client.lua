@@ -12,7 +12,7 @@ local particleDict = "scr_indep_fireworks"
 RegisterNetEvent("firework:startFireworkShow")
 AddEventHandler("firework:startFireworkShow", function()
     for i = 1, #Config.FireworkLocations, 1 do
-        local fireworkPos = vector3(Config.FireworkLocations[i]["x"], Config.FireworkLocations[i]["y"], Config.FireworkLocations[i]["z"])
+        local fireworkPos = Config.FireworkLocations[i]["Position"]
         local fireworkType = Config.FireworkLocations[i]["Fireworktype"]
 
         if fireworkType == "Battery" then
