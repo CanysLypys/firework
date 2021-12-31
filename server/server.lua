@@ -1,8 +1,3 @@
-ESX = nil
-
-TriggerEvent("esx:getSharedObject", function(obj) ESX = obj end)
-
-
 GetTime = function()
 	local timestamp = os.time()
 	local d = os.date("*t", timestamp).wday
@@ -44,10 +39,8 @@ FireworkShow = function()
 end
 
 RegisterCommand("fireworkshow", function(source)
-    local xPlayer = ESX.GetPlayerFromId(source)
-
     print("^Fireworkshow started manually.^0")
-    TriggerClientEvent("firework:startFireworkShow", xPlayer.source)
+    TriggerClientEvent("firework:startFireworkShow", source)
 end)
 
 RegisterNetEvent("firework:battery")
