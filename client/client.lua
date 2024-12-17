@@ -1,162 +1,59 @@
-local particleDict = "scr_indep_fireworks"
-local fireworkOver = false
+local showStarted = false
 
-RegisterNetEvent("firework:startFireworkShow")
-AddEventHandler("firework:startFireworkShow", function()
-    for i = 1, #Config.FireworkLocations, 1 do
-        local fireworkPos = vector3(Config.FireworkLocations[i]["x"], Config.FireworkLocations[i]["y"], Config.FireworkLocations[i]["z"])
-        local fireworkType = Config.FireworkLocations[i]["Fireworktype"]
+local function RequestPtfxAsset()
+	if not HasNamedPtfxAssetLoaded(Config.ParticleDict) then
+		RequestNamedPtfxAsset(Config.ParticleDict)
 
-        if fireworkType == "Battery" then
-            TriggerServerEvent("firework:battery", fireworkPos)
-        elseif fireworkType == "Rocket" then
-			TriggerServerEvent("firework:rocket", fireworkPos)
-		elseif fireworkType == "Fountain" then
-			TriggerServerEvent("firework:fountain", fireworkPos)
-        end
-    end
-end)
-
-RegisterNetEvent("firework:stopFireworkShow")
-AddEventHandler("firework:stopFireworkShow", function()
-	fireworkOver = true
-end)
-
-
-RegisterNetEvent("firework:battery")
-AddEventHandler("firework:battery", function(fireworkPos)
-	print("HI")
-    RequestNamedPtfxAsset(particleDict)
-    while not HasNamedPtfxAssetLoaded(particleDict) do
-        Wait(1)
+		while not HasNamedPtfxAssetLoaded(Config.ParticleDict) do
+			Wait(1)
+		end
 	end
-	
-	UseParticleFxAssetNextCall(particleDict)
-	local particle = StartNetworkedParticleFxNonLoopedAtCoord("scr_indep_firework_trailburst", fireworkPos, 0.0, 0.0, 0.0, math.random() * 0.5 + 0.8, false, false, false, false)
-	Wait(1500)
-	UseParticleFxAssetNextCall(particleDict)
-	local particle2 = StartNetworkedParticleFxNonLoopedAtCoord("scr_indep_firework_trailburst", fireworkPos, 0.0, 0.0, 0.0, math.random() * 0.5 + 0.8, false, false, false, false)
-	Wait(1500)
-	UseParticleFxAssetNextCall(particleDict)
-	local particle3 = StartNetworkedParticleFxNonLoopedAtCoord("scr_indep_firework_trailburst", fireworkPos, 0.0, 0.0, 0.0, math.random() * 0.5 + 0.8, false, false, false, false)
-	Wait(1500)
-	UseParticleFxAssetNextCall(particleDict)
-	local particle4 = StartNetworkedParticleFxNonLoopedAtCoord("scr_indep_firework_trailburst", fireworkPos, 0.0, 0.0, 0.0, math.random() * 0.5 + 0.8, false, false, false, false)
-	Wait(1500)
-	UseParticleFxAssetNextCall(particleDict)
-	local particle5 = StartNetworkedParticleFxNonLoopedAtCoord("scr_indep_firework_trailburst", fireworkPos, 0.0, 0.0, 0.0, math.random() * 0.5 + 0.8, false, false, false, false)
-	Wait(1500)
-	UseParticleFxAssetNextCall(particleDict)
-	local particle6 = StartNetworkedParticleFxNonLoopedAtCoord("scr_indep_firework_trailburst", fireworkPos, 0.0, 0.0, 0.0, math.random() * 0.5 + 0.8, false, false, false, false)
-	Wait(1500)
-	UseParticleFxAssetNextCall(particleDict)
-	local particle7 = StartNetworkedParticleFxNonLoopedAtCoord("scr_indep_firework_trailburst", fireworkPos, 0.0, 0.0, 0.0, math.random() * 0.5 + 0.8, false, false, false, false)
-	Wait(1500)
-	UseParticleFxAssetNextCall(particleDict)
-	local particle8 = StartNetworkedParticleFxNonLoopedAtCoord("scr_indep_firework_trailburst", fireworkPos, 0.0, 0.0, 0.0, math.random() * 0.5 + 0.8, false, false, false, false)
-	Wait(4000)
-	UseParticleFxAssetNextCall(particleDict)
-	local particle9 = StartNetworkedParticleFxNonLoopedAtCoord("scr_indep_firework_trailburst", fireworkPos, 0.0, 0.0, 0.0, math.random() * 0.5 + 1.8, false, false, false, false)
+end
 
-	if fireworkOver then
+local function fireFirework(fireworkPos, effectType)
+	if not Config.EffectName[effectType] then
+		return error("Invalid firework type")
+	end
+
+	CreateThread(function()
+		RequestPtfxAsset()
+
+		while showStarted do
+			for i = 1, 10, 1 do
+				local wait = math.random(500, 1000)
+
+				Wait(wait)
+
+				UseParticleFxAssetNextCall(Config.ParticleDict)
+
+				StartParticleFxNonLoopedAtCoord(Config.EffectName[effectType], fireworkPos.x, fireworkPos.y,
+					fireworkPos.z, 0.0, 0.0, 0.0,
+					2.5, false, false, false)
+				Wait(1500)
+			end
+		end
+	end)
+end
+
+local function startShow()
+	if showStarted then
 		return
-	else
-		TriggerEvent("firework:battery", fireworkPos)
 	end
+
+	showStarted = true
+
+	for _, data in pairs(Config.FireworkLocations) do
+		local position = data.position
+		local effectName = data.effectName
+
+		fireFirework(position, effectName)
+	end
+end
+
+RegisterNetEvent("firework:startFireworkShow", function()
+	startShow()
 end)
 
-RegisterNetEvent("firework:rocket")
-AddEventHandler("firework:rocket", function(fireworkPos)
-	while not HasNamedPtfxAssetLoaded(particleDict) do
-        Wait(1)
-    end
-    UseParticleFxAssetNextCall(particleDict)
-    local particle = StartParticleFxNonLoopedAtCoord("scr_indep_firework_starburst", fireworkPos, 0.0, 0.0, 0.0, 2.5, false, false, false, false)
-	Wait(1500)
-	UseParticleFxAssetNextCall(particleDict)
-    local particle2 = StartParticleFxNonLoopedAtCoord("scr_indep_firework_starburst", fireworkPos, 0.0, 0.0, 0.0, 2.5, false, false, false, false)
-	Wait(1500)
-	UseParticleFxAssetNextCall(particleDict)
-    local particle3 = StartParticleFxNonLoopedAtCoord("scr_indep_firework_starburst", fireworkPos, 0.0, 0.0, 0.0, 2.5, false, false, false, false)
-	Wait(1500)
-	UseParticleFxAssetNextCall(particleDict)
-    local particle4 = StartParticleFxNonLoopedAtCoord("scr_indep_firework_starburst", fireworkPos, 0.0, 0.0, 0.0, 2.5, false, false, false, false)
-	Wait(1500)
-	UseParticleFxAssetNextCall(particleDict)
-    local particle5 = StartParticleFxNonLoopedAtCoord("scr_indep_firework_starburst", fireworkPos, 0.0, 0.0, 0.0, 2.5, false, false, false, false)
-	Wait(1500)
-	UseParticleFxAssetNextCall(particleDict)
-    local particle6 = StartParticleFxNonLoopedAtCoord("scr_indep_firework_starburst", fireworkPos, 0.0, 0.0, 0.0, 2.5, false, false, false, false)
-	Wait(1500)
-	UseParticleFxAssetNextCall(particleDict)
-    local particle7 = StartParticleFxNonLoopedAtCoord("scr_indep_firework_starburst", fireworkPos, 0.0, 0.0, 0.0, 2.5, false, false, false, false)
-	Wait(1500)
-	UseParticleFxAssetNextCall(particleDict)
-    local particle8 = StartParticleFxNonLoopedAtCoord("scr_indep_firework_starburst", fireworkPos, 0.0, 0.0, 0.0, 2.5, false, false, false, false)
-	Wait(1500)
-	UseParticleFxAssetNextCall(particleDict)
-    local particle9 = StartParticleFxNonLoopedAtCoord("scr_indep_firework_starburst", fireworkPos, 0.0, 0.0, 0.0, 2.5, false, false, false, false)
-	Wait(1500)
-	UseParticleFxAssetNextCall(particleDict)
-    local particle10 = StartParticleFxNonLoopedAtCoord("scr_indep_firework_starburst", fireworkPos, 0.0, 0.0, 0.0, 2.5, false, false, false, false)
-	Wait(1500)
-	UseParticleFxAssetNextCall(particleDict)
-    local particle11 = StartParticleFxNonLoopedAtCoord("scr_indep_firework_starburst", fireworkPos, 0.0, 0.0, 0.0, 2.5, false, false, false, false)
-	Wait(1500)
-	UseParticleFxAssetNextCall(particleDict)
-    local particle12 = StartParticleFxNonLoopedAtCoord("scr_indep_firework_starburst", fireworkPos, 0.0, 0.0, 0.0, 2.5, false, false, false, false)
-	Wait(1500)
-	UseParticleFxAssetNextCall(particleDict)
-    local particle13 = StartParticleFxNonLoopedAtCoord("scr_indep_firework_starburst", fireworkPos, 0.0, 0.0, 0.0, 2.5, false, false, false, false)
-	Wait(1500)
-	UseParticleFxAssetNextCall(particleDict)
-    local particle14 = StartParticleFxNonLoopedAtCoord("scr_indep_firework_starburst", fireworkPos, 0.0, 0.0, 0.0, 2.5, false, false, false, false)
-	Wait(1500)
-	UseParticleFxAssetNextCall(particleDict)
-    local particle15 = StartParticleFxNonLoopedAtCoord("scr_indep_firework_starburst", fireworkPos, 0.0, 0.0, 0.0, 2.5, false, false, false, false)
-	Wait(1500)
-
-	if fireworkOver then
-		return
-	else
-		TriggerEvent("firework:rocket", fireworkPos)
-	end
-end)
-
-RegisterNetEvent("firework:fountain")
-AddEventHandler("firework:fountain", function(fireworkPos)
-	RequestNamedPtfxAsset(particleDict)
-    while not HasNamedPtfxAssetLoaded(particleDict) do
-        Wait(1)
-	end
-	
-	UseParticleFxAssetNextCall(particleDict)
-	local particle = StartNetworkedParticleFxNonLoopedAtCoord("scr_indep_firework_fountain", fireworkPos, 0.0, 0.0, 0.0, math.random() * 0.5 + 0.8, false, false, false, false)
-	Wait(1500)
-	UseParticleFxAssetNextCall(particleDict)
-	local particle2 = StartNetworkedParticleFxNonLoopedAtCoord("scr_indep_firework_fountain", fireworkPos, 0.0, 0.0, 0.0, math.random() * 0.5 + 0.8, false, false, false, false)
-	Wait(1500)
-	UseParticleFxAssetNextCall(particleDict)
-	local particle3 = StartNetworkedParticleFxNonLoopedAtCoord("scr_indep_firework_fountain", fireworkPos, 0.0, 0.0, 0.0, math.random() * 0.5 + 0.8, false, false, false, false)
-	Wait(1500)
-	UseParticleFxAssetNextCall(particleDict)
-	local particle4 = StartNetworkedParticleFxNonLoopedAtCoord("scr_indep_firework_fountain", fireworkPos, 0.0, 0.0, 0.0, math.random() * 0.5 + 0.8, false, false, false, false)
-	Wait(1500)
-	UseParticleFxAssetNextCall(particleDict)
-	local particle5 = StartNetworkedParticleFxNonLoopedAtCoord("scr_indep_firework_fountain", fireworkPos, 0.0, 0.0, 0.0, math.random() * 0.5 + 0.8, false, false, false, false)
-	Wait(2500)
-	UseParticleFxAssetNextCall(particleDict)
-	local particle6 = StartNetworkedParticleFxNonLoopedAtCoord("scr_indep_firework_fountain", fireworkPos, 0.0, 0.0, 0.0, math.random() * 1.5 + 1.8, false, false, false, false)
-	Wait(2500)
-	UseParticleFxAssetNextCall(particleDict)
-	local particle7 = StartNetworkedParticleFxNonLoopedAtCoord("scr_indep_firework_fountain", fireworkPos, 0.0, 0.0, 0.0, math.random() * 1.5 + 1.8, false, false, false, false)
-	Wait(2500)
-	UseParticleFxAssetNextCall(particleDict)
-	local particle8 = StartNetworkedParticleFxNonLoopedAtCoord("scr_indep_firework_fountain", fireworkPos, 0.0, 0.0, 0.0, math.random() * 1.5 + 1.8, false, false, false, false)
-
-	if fireworkOver then
-		return
-	else
-		TriggerEvent("firework:rocket", fireworkPos)
-	end
+RegisterNetEvent("firework:stopFireworkShow", function()
+	showStarted = false
 end)

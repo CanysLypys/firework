@@ -1,57 +1,72 @@
-GetTime = function()
-	local timestamp = os.time()
-	local d = os.date("*t", timestamp).wday
-	local h = tonumber(os.date("%H", timestamp))
-	local m = tonumber(os.date("%M", timestamp))
+local showStarted = false
 
-	return {d = d, h = h, m = m}
+function IsNewYear()
+    local time = os.date("*t")
+    return time.month == 1 and time.day == 1
 end
 
 CreateThread(function()
     while true do
-        Wait(0)
-        time = GetTime()
-        if time.h == 0 and time.m == 0 then
-            FireworkShow()
-            break
+        Wait(1000)
+        local time = os.date("*t")
+
+        if IsNewYear() then
+            if time.hour == 0 and time.min == 0 then
+                FireworkShow()
+            elseif time.hour == 0 and time.min == 15 then
+                StopFireworkShow()
+                break
+            end
         end
     end
 end)
 
-CreateThread(function()
-    while true do
-        Wait(0)
-        time = GetTime()
-        if time.h == 0 and time.m == 15 then
-            print("^1Fireworkshow is over.^0")
-            TriggerClientEvent("firework:stopFireworkShow", -1)
-            break
-        end
-    end
-end)
+function FireworkShow()
+    if not showStarted then
+        TriggerClientEvent("firework:startFireworkShow", -1)
 
-FireworkShow = function()
-    print("It's new year! Time to shine. Starting Fireworkshow....")
-    TriggerClientEvent("firework:startFireworkShow", -1)
+        showStarted = true
+
+        print("^2Fireworkshow started manually.^0")
+    else
+        print("^1Fireworkshow is already running.^0")
+    end
 end
 
-RegisterCommand("fireworkshow", function(source)
-    print("^2Fireworkshow started manually.^0")
-    TriggerClientEvent("firework:startFireworkShow", source)
-end)
+function StopFireworkShow()
+    if showStarted then
+        TriggerClientEvent("firework:stopFireworkShow", -1)
 
-RegisterNetEvent("firework:battery")
-AddEventHandler("firework:battery", function(fireworkPos)
-    TriggerClientEvent("firework:battery", -1, fireworkPos)
-end)
+        showStarted = false
 
-RegisterNetEvent("firework:rocket")
-AddEventHandler("firework:rocket", function(fireworkPos)
-    TriggerClientEvent("firework:rocket", -1, fireworkPos)
-end)
+        print("^1Fireworkshow stopped manually.^0")
+    else
+        print("^1Fireworkshow is not running.^0")
+    end
+end
 
+RegisterCommand("firework", function(source, args, rawCommand)
+    local type = tostring(args[1])
 
-RegisterNetEvent("firework:fountain")
-AddEventHandler("firework:fountain", function(fireworkPos)
-    TriggerClientEvent("firework:fountain", -1, fireworkPos)
+    if type == "start" then
+        FireworkShow()
+    elseif type == "stop" then
+        StopFireworkShow()
+    elseif type == "status" then
+        print("Fireworkshow is running: " .. tostring(showStarted))
+    else
+        print("----------")
+        print("firework start - Start the firework show")
+        print("firework stop - Stop the firework show")
+        print("firework status - Check if the firework show is running")
+        print("----------")
+    end
+end, true)
+
+AddEventHandler("playerJoining", function()
+    local playerId = source
+
+    if showStarted then
+        TriggerClientEvent("firework:startFireworkShow", playerId)
+    end
 end)
