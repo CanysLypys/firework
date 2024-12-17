@@ -1,17 +1,24 @@
 Config = {}
+Config.ParticleDict = "scr_indep_fireworks"
+
+Config.EffectName = {
+    ["Battery"] = "scr_indep_firework_trailburst",
+    ["Rocket"] = "scr_indep_firework_starburst",
+    ["Fountain"] = "scr_indep_firework_fountain",
+}
 
 Config.FireworkLocations = {
-    { ["x"] = -1934.69, ["y"] = -1333.48, ["z"] = 20.74, ["Fireworktype"] = "Battery"},
-    { ["x"] = -1800.69, ["y"] = -1333.48, ["z"] = 20.74, ["Fireworktype"] = "Rocket"},
-    { ["x"] = -1752.13, ["y"] = -1486.68, ["z"] = 20.74, ["Fireworktype"] = "Fountain"},
-    { ["x"] = -1896.52, ["y"] = -1491.06, ["z"] = 20.74, ["Fireworktype"] = "Rocket"},
-    { ["x"] = -1714.08, ["y"] = -1404.71, ["z"] = 20.74, ["Fireworktype"] = "Battery"},
-    { ["x"] = -1635.27, ["y"] = -1574.06, ["z"] = 20.74, ["Fireworktype"] = "Fountain"},
-    { ["x"] = -1714.08, ["y"] = -1404.71, ["z"] = 20.74, ["Fireworktype"] = "Battery"},
-    { ["x"] = -1661.6, ["y"] = -1477.31, ["z"] = 20.74, ["Fireworktype"] = "Rocket"},
-    { ["x"] = -1784.64, ["y"] = -1309.06, ["z"] = 20.74, ["Fireworktype"] = "Fountain"},
-    { ["x"] = -1778.74, ["y"] = -1399.71, ["z"] = 20.74, ["Fireworktype"] = "Rocket"},
-    { ["x"] = -1826.71, ["y"] = -1523.61, ["z"] = 20.74, ["Fireworktype"] = "Fountain"},
-    { ["x"] = -1766.11, ["y"] = -1638.99, ["z"] = 20.74, ["Fireworktype"] = "Rocket"},
-    { ["x"] = -1687.31, ["y"] = -1557.52, ["z"] = 20.74, ["Fireworktype"] = "Battery"},
+    { position = vec3(-1934.69, -1333.48, 20.74), effectName = "Battery" },
+    { position = vec3(-1800.69, -1333.48, 20.74), effectName = "Rocket" },
+    { position = vec3(-1752.13, -1486.68, 20.74), effectName = "Fountain" },
+    { position = vec3(-1896.52, -1491.06, 20.74), effectName = "Rocket" },
+    { position = vec3(-1714.08, -1404.71, 20.74), effectName = "Battery" },
+    { position = vec3(-1635.27, -1574.06, 20.74), effectName = "Fountain" },
+    { position = vec3(-1714.08, -1404.71, 20.74), effectName = "Battery" },
+    { position = vec3(-1661.6, -1477.31, 20.74),  effectName = "Rocket" },
+    { position = vec3(-1784.64, -1309.06, 20.74), effectName = "Fountain" },
+    { position = vec3(-1778.74, -1399.71, 20.74), effectName = "Rocket" },
+    { position = vec3(-1826.71, -1523.61, 20.74), effectName = "Fountain" },
+    { position = vec3(-1766.11, -1638.99, 20.74), effectName = "Rocket" },
+    { position = vec3(-1687.31, -1557.52, 20.74), effectName = "Battery" },
 }
