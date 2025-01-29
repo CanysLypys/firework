@@ -9,7 +9,7 @@ end
 
 CreateThread(function()
     while true do
-        Wait(60000)
+        Wait(60000) -- Check every minute
         local time = GetTime()
         if time.h == 0 and time.m == 0 then
             FireworkShow()
